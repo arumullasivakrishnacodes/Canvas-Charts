@@ -8,10 +8,8 @@ window.onload = function () {
             valueFormatString: "DD MMM",
             interval: 1,
             intervalType: "day",
-            title: "Rate"
         },
         axisY: {
-            title: "Gold Rate (in INR)",
             includeZero: false,
             gridThickness: 0
         },
@@ -19,7 +17,7 @@ window.onload = function () {
             {
                 type: "line",
                 name: "18kt Gold",
-                showInLegend: true,
+                showInLegend: false,
                 lineThickness: 2,
                 color: "rgba(0, 0, 255, 0.7)",
                 markerType: "circle",
@@ -48,7 +46,7 @@ window.onload = function () {
             {
                 type: "line",
                 name: "22kt Gold",
-                showInLegend: true,
+                showInLegend: false,
                 lineThickness: 2,
                 color: "rgba(0, 255, 0, 0.7)",
                 markerType: "circle",
@@ -78,7 +76,7 @@ window.onload = function () {
             {
                 type: "line",
                 name: "24kt Gold",
-                showInLegend: true,
+                showInLegend: false,
                 lineThickness: 2,
                 color: "red",
                 markerType: "circle",
@@ -107,6 +105,39 @@ window.onload = function () {
             }
         ]
     });
+
+    document.getElementById("button1").onclick = function () {
+        const dataPoints = chart.options.data[0].dataPoints; // Original data points
+        const animatedData = []; // Store gradually added data points
+        let index = 0;
+    
+        // Reset the chart data to show only the first line with no points initially
+        chart.options.data = [{ ...chart.options.data[0], dataPoints: animatedData }];
+        chart.render();
+    
+        // Gradually add points to simulate left-to-right animation
+        const interval = setInterval(function () {
+            if (index < dataPoints.length) {
+                animatedData.push(dataPoints[index]);
+                index++;
+                chart.options.animationEnabled = false; // Disable default animation
+                chart.render(); // Re-render the chart with new points
+            } else {
+                clearInterval(interval); // Stop the animation when all points are added
+                chart.options.animationEnabled = true; // Re-enable animation after full update
+            }
+        }, 300); // Adjust the interval duration to 300ms for smoother, slower animation
+    };
+
+    document.getElementById("button2").onclick = function () {
+        chart.options.data = [chart.options.data[1]]; // Show only the second line
+        chart.render(); 
+    };
+
+    document.getElementById("button3").onclick = function () {
+        chart.options.data = [chart.options.data[2]]; // Show only the third line
+        chart.render();
+    };
 
     // Event listeners to adjust line thickness on hover
     chart.options.data.forEach(function (dataSeries, index) {
